@@ -29,7 +29,7 @@ class Batch:
         if self.can_allocate:
             self._allocations.add(line)
 
-    def deallocation(self, line: OrderLine):
+    def deallocate(self, line: OrderLine):
         if line in self._allocations:
             self._allocations.remove(line)
 
@@ -40,7 +40,6 @@ class Batch:
     @property
     def available_qty(self) -> int:
         return self._purchased_qty - self.allocated_qty
-
 
     def can_allocate(self, line: OrderLine) -> bool:
         return self.sku == line.sku and self.available_qty >= line.qty
