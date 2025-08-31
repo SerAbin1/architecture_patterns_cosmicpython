@@ -10,6 +10,10 @@ from datetime import date
 from typing import List, Optional
 
 
+class OutOfStock(Exception):
+    pass
+
+
 # order has order_ref which uiquely identifies it
 # but line doesnt
 # whenever we have a business concept that has data but no identitiy,
@@ -76,10 +80,10 @@ class Batch:
 
 
 def allocate(line: OrderLine, batches: List[Batch]) -> str:
-    batch = next(
-        b   
-        for b in sorted(batches)
-        if b.can_allocate(line)
-    )
+    try:
+        batch = next(b for b in sorted(batches) if b.can_allocate(line))
+    except StopIteration:
+        raise OutOfStock(f"Out of stock for sku {line.sku}")
+
     batch.allocate(line)
     return batch.reference
